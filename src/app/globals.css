@@ -1,0 +1,107 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --muted: #666666;
+  --muted-strong: #444444;
+  --surface: #fafafa;
+  --surface-hover: #f2f2f2;
+  --border: #eaeaea;
+  --border-strong: #d4d4d4;
+  --accent: #0070f3;
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #ededed;
+  --muted: #888888;
+  --muted-strong: #a1a1a1;
+  --surface: #0a0a0a;
+  --surface-hover: #141414;
+  --border: #1f1f1f;
+  --border-strong: #333333;
+  --accent: #3291ff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border-subtle: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Markdown 代码高亮（不引入额外主题包） */
+.prose pre {
+  background: #0a0a0a !important;
+  border: 1px solid #1f1f1f;
+}
+
+.prose pre code {
+  color: #ededed;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #8b949e;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal {
+  color: #ff7b72;
+}
+
+.hljs-string,
+.hljs-attr,
+.hljs-addition {
+  color: #a5d6ff;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet {
+  color: #79c0ff;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  color: #d2a8ff;
+}
+
+.hljs-type,
+.hljs-built_in {
+  color: #ffa657;
+}
