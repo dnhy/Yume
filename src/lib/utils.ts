@@ -25,6 +25,10 @@ export function formatDateTime(iso: string) {
   return format(new Date(iso), "yyyy-MM-dd HH:mm");
 }
 
+export function formatDate(iso: string) {
+  return format(new Date(iso), "yyyy.MM.dd");
+}
+
 export function formatRelative(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const minute = 60 * 1000;

@@ -105,3 +105,111 @@ body {
 .hljs-built_in {
   color: #ffa657;
 }
+
+/* Deadline 进度条动画 */
+.deadline-card {
+  animation: deadline-reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--deadline-delay, 0ms);
+}
+
+.deadline-bar-fill {
+  width: var(--deadline-progress, 0%);
+  background-color: var(--deadline-accent, var(--accent));
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--deadline-accent, var(--accent)) 45%, transparent),
+    var(--deadline-accent, var(--accent))
+  );
+  box-shadow: 0 0 12px
+    color-mix(in srgb, var(--deadline-accent, var(--accent)) 38%, transparent);
+  animation: deadline-fill 1.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--deadline-delay, 0ms);
+  transition: filter 200ms ease;
+}
+
+.deadline-card:hover .deadline-bar-fill {
+  filter: brightness(1.08) saturate(1.1);
+}
+
+.deadline-card[data-status="3"] .deadline-bar-fill {
+  filter: grayscale(0.8);
+  opacity: 0.55;
+}
+
+.deadline-bar-shine {
+  background-image: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: deadline-shimmer 3s ease-in-out infinite;
+  animation-delay: calc(var(--deadline-delay, 0ms) + 1.2s);
+}
+
+.deadline-head-dot {
+  background-color: var(--deadline-accent, var(--accent));
+  animation: deadline-pulse 2.2s ease-out infinite;
+  animation-delay: calc(var(--deadline-delay, 0ms) + 1.2s);
+}
+
+@keyframes deadline-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes deadline-fill {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: var(--deadline-progress, 0%);
+  }
+}
+
+@keyframes deadline-shimmer {
+  0% {
+    background-position: 180% 0;
+  }
+
+  100% {
+    background-position: -80% 0;
+  }
+}
+
+@keyframes deadline-pulse {
+  0% {
+    box-shadow: 0 0 0 0
+      color-mix(in srgb, var(--deadline-accent, var(--accent)) 35%, transparent);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deadline-card,
+  .deadline-bar-fill,
+  .deadline-bar-shine,
+  .deadline-head-dot {
+    animation: none !important;
+  }
+
+  .deadline-bar-fill {
+    width: var(--deadline-progress, 0%);
+  }
+}

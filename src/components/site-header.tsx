@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/", label: "时间线" },
   { href: "/?type=2", label: "日记" },
   { href: "/?type=1", label: "随想" },
+  { href: "/deadlines", label: "Deadline" },
 ];
 
 async function signInWithGithub() {

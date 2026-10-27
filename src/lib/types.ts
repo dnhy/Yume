@@ -44,3 +44,30 @@ export interface PostLikeResult {
   likeCount: number;
   isLiked: boolean;
 }
+
+export type DeadlineStatus = 1 | 2 | 3;
+
+export const DEADLINE_STATUS_LABEL: Record<DeadlineStatus, string> = {
+  1: "进行中",
+  2: "即将到期",
+  3: "已过期",
+};
+
+export interface DeadlineItem {
+  id: string;
+  projectName: string;
+  description?: string | null;
+  startDate: string;
+  dueDate: string;
+  accentColor?: string | null;
+  sortOrder: number;
+  progressPercent: number;
+  daysRemaining: number;
+  status: DeadlineStatus;
+  creationTime: string;
+}
+
+export interface ContentVersion {
+  version: string;
+}
+

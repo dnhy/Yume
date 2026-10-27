@@ -1,9 +1,10 @@
 import { AlertCircle, ArrowDown } from "lucide-react";
 import Link from "next/link";
 
+import { ContentLiveRefresh } from "@/components/content-live-refresh";
 import { PostCard } from "@/components/post-card";
-import { apiGet } from "@/lib/api";
-import type { PagedResult, PostListItem } from "@/lib/types";
+import { apiGetFresh } from "@/lib/api";
+import type { ContentVersion, PagedResult, PostListItem } from "@/lib/types";
 import { buildQuery, cn, groupByMonth } from "@/lib/utils";
 
 const PAGE_SIZE = 20;
@@ -29,21 +30,26 @@ export default async function HomePage({
     params.type === "1" || params.type === "2" ? params.type : undefined;
   const skip = Math.max(Number(params.skip ?? 0) || 0, 0);
 
-  let data: PagedResult<PostListItem> | null = null;
-  let error: string | null = null;
-
-  try {
-    data = await apiGet<PagedResult<PostListItem>>(
+  const [dataResult, version] = await Promise.all([
+    apiGetFresh<PagedResult<PostListItem>>(
       `/api/posts/public${buildQuery({
         Type: type,
         SkipCount: skip,
         MaxResultCount: PAGE_SIZE,
       })}`,
-      20,
-    );
-  } catch (exception) {
-    error = exception instanceof Error ? exception.message : "加载失败";
-  }
+    )
+      .then((data) => ({ data, error: null as string | null }))
+      .catch((exception) => ({
+        data: null,
+        error: exception instanceof Error ? exception.message : "加载失败",
+      })),
+    apiGetFresh<ContentVersion>("/api/posts/public/version")
+      .then((data) => data.version)
+      .catch(() => ""),
+  ]);
+
+  const data = dataResult.data;
+  const error = dataResult.error;
 
   const groups = data ? groupByMonth(data.items) : [];
   const hasMore = data ? skip + data.items.length < data.totalCount : false;
@@ -134,6 +140,13 @@ export default async function HomePage({
           </Link>
         </div>
       ) : null}
+
+      <ContentLiveRefresh
+        endpoint="/api/posts/version"
+        initialVersion={version}
+        refreshingLabel="正在同步最新内容"
+        updatedLabel="日记与随想已更新"
+      />
     </div>
   );
 }

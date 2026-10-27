@@ -24,10 +24,14 @@ async function readErrorMessage(response: Response) {
   }
 }
 
-export async function apiGet<T>(path: string, revalidateSeconds = 30): Promise<T> {
+export async function apiGet<T>(
+  path: string,
+  revalidateSeconds = 30,
+  tags: string[] = ["posts"],
+): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { Accept: "application/json" },
-    next: { revalidate: revalidateSeconds, tags: ["posts"] },
+    next: { revalidate: revalidateSeconds, tags },
   });
 
   if (!response.ok) {
@@ -37,15 +41,32 @@ export async function apiGet<T>(path: string, revalidateSeconds = 30): Promise<T
   return (await response.json()) as T;
 }
 
-export async function apiGetOrNull<T>(path: string, revalidateSeconds = 30): Promise<T | null> {
+export async function apiGetOrNull<T>(
+  path: string,
+  revalidateSeconds = 30,
+  tags: string[] = ["posts"],
+): Promise<T | null> {
   try {
-    return await apiGet<T>(path, revalidateSeconds);
+    return await apiGet<T>(path, revalidateSeconds, tags);
   } catch (error) {
     if (error instanceof ApiError && (error.status === 404 || error.status === 403)) {
       return null;
     }
     throw error;
   }
+}
+
+export async function apiGetFresh<T>(path: string): Promise<T> {
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, await readErrorMessage(response));
+  }
+
+  return (await response.json()) as T;
 }
 
 export async function apiSend<T>(
